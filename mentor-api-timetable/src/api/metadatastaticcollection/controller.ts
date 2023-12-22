@@ -1,4 +1,4 @@
-import { success } from "../../common/response/";
+import { success } from "../../common/response";
 import {
   createCollectionService,
   deleteCollectionService,

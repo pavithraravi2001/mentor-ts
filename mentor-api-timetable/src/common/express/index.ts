@@ -6,7 +6,7 @@ import express from "express";
 import forceSSL from "express-force-ssl";
 import morgan from "morgan";
 import { errorHandler as queryErrorHandler } from "querymen";
-import { verify } from "../../common/jwt";
+import { verify } from "../jwt";
 import { env } from "../../config";
 var path = require("path");
 

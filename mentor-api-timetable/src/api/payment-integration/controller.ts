@@ -1,4 +1,4 @@
-import { redirect, success } from "../../common/response/";
+import { redirect, success } from "../../common/response";
 import {
   admissionPaymentCallbackService,
   admissionPaymentService,
