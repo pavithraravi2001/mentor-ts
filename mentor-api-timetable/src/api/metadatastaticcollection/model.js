@@ -1,28 +1,47 @@
-import mongoose, { Schema } from "mongoose";
-
-const metadataCollectionItem = new Schema({
-  optionKey: String,
-  optionValue: String,
-  default: Boolean,
-  description: String,
-  order: Number,
-  parent: String,
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
 });
-
-const MetadataCollectionSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  version: Number,
-  status: String,
-  items: [metadataCollectionItem],
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.schema = exports.MetadataCollection = void 0;
+const mongoose_1 = __importStar(require("mongoose"));
+const metadataCollectionItem = new mongoose_1.Schema({
+    optionKey: String,
+    optionValue: String,
+    default: Boolean,
+    description: String,
+    order: Number,
+    parent: String,
 });
-
-export const MetadataCollection = mongoose.model(
-  "MetadataCollection",
-  MetadataCollectionSchema
-);
-
-export const schema = MetadataCollection.schema;
+const MetadataCollectionSchema = new mongoose_1.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    version: Number,
+    status: String,
+    items: [metadataCollectionItem],
+});
+exports.MetadataCollection = mongoose_1.default.model("MetadataCollection", MetadataCollectionSchema);
+exports.schema = exports.MetadataCollection.schema;

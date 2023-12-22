@@ -1,23 +1,12 @@
-import { Router } from "express";
-import {
-    createLeaveForm,
-    deleteLeaveForm,
-    getLeaveForm,
-    getLeaveFormById,
-    getUserId,
-    updateLeaveForm,
-} from "./controller";
-const router = new Router();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controller_1 = require("./controller");
+const router = new express_1.Router();
 module.exports = router;
-
-router.post("/", createLeaveForm);
-
-router.get("/", getLeaveForm);
-
-router.get("/:id", getLeaveFormById);
-
-router.put("/:id", updateLeaveForm);
-
-router.delete("/:id", deleteLeaveForm);
-
-router.get("/userId/:userId", getUserId);
+router.post("/", controller_1.createLeaveForm);
+router.get("/", controller_1.getLeaveForm);
+router.get("/:id", controller_1.getLeaveFormById);
+router.put("/:id", controller_1.updateLeaveForm);
+router.delete("/:id", controller_1.deleteLeaveForm);
+router.get("/userId/:userId", controller_1.getUserId);

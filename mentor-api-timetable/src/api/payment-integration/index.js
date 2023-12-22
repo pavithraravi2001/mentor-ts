@@ -1,55 +1,36 @@
-import { Router } from "express";
-import {
-  admissionPayment,
-  admissionPaymentCallback,
-  applcationPaymentCallback,
-  applicationPayment,
-  getAdmissionPaymentConfig,
-  getPaymentConfig,
-} from "./controller";
-
-const router = new Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controller_1 = require("./controller");
+const router = new express_1.Router();
 /**
  * @api {get} /payment-integrations/application-payment-configs
  * - to initialize payment config on mentor-ui
  */
-router.get("/application-payment-configs", getPaymentConfig);
-
+router.get("/application-payment-configs", controller_1.getPaymentConfig);
 /**
  * @api {post} /payment-integrations/application-payment-initialization/:applicationId
  * - to initiate payment request from mentor-ui
  */
-router.get(
-  "/application-payment-initialization/:applicationId",
-  applicationPayment
-);
-
+router.get("/application-payment-initialization/:applicationId", controller_1.applicationPayment);
 /**
  * @api {post} /payment-integrations/application-payment/callback
  * To store payment information from payment gateway
  */
-router.post("/application-payment/callback", applcationPaymentCallback);
-
+router.post("/application-payment/callback", controller_1.applcationPaymentCallback);
 /**
  * @api {get} /payment-integrations/application-payment-configs
  * - to initialize payment config on mentor-ui
  */
-router.get("/admission-payment-configs", getAdmissionPaymentConfig);
-
+router.get("/admission-payment-configs", controller_1.getAdmissionPaymentConfig);
 /**
  * @api {post} /payment-integrations/application-payment-initialization/:applicationId
  * - to initiate payment request from mentor-ui
  */
-router.get(
-  "/admission-payment-initialization/:applicationId",
-  admissionPayment
-);
-
+router.get("/admission-payment-initialization/:applicationId", controller_1.admissionPayment);
 /**
  * @api {post} /payment-integrations/application-payment/callback
  * To store payment information from payment gateway
  */
-router.post("/admission-payment/callback", admissionPaymentCallback);
-
-export default router;
+router.post("/admission-payment/callback", controller_1.admissionPaymentCallback);
+exports.default = router;

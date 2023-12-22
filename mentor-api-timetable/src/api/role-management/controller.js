@@ -1,72 +1,59 @@
-import { success } from "../../common/response/";
-import {
-  deleteInstituteRoleService,
-  deleteUserRoleService,
-  getInstituteFeatureService,
-  getInstituteRolesService,
-  getRolesByUserIdService,
-  getUsersByRoleIdService,
-  updateInstituteFeatureService,
-  updateInstituteRolesService,
-  updateUserRoleService,
-} from "./service";
-
-export const getInstituteRoles = ({ params, query }, res) => {
-  getInstituteRolesService(params, query)
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getRolesByUserId = exports.getUsersByRoleId = exports.deleteUserRole = exports.updateUserRole = exports.updateInstituteFeature = exports.getInstituteFeature = exports.deleteInstituteRole = exports.updateInstituteRoles = exports.getInstituteRoles = void 0;
+const response_1 = require("../../common/response/");
+const service_1 = require("./service");
+const getInstituteRoles = ({ params, query }, res) => {
+    (0, service_1.getInstituteRolesService)(params, query)
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const updateInstituteRoles = ({ params, body }, res) => {
-  updateInstituteRolesService(params, {
-    instituteId: params.instituteId,
-    ...body,
-  })
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.getInstituteRoles = getInstituteRoles;
+const updateInstituteRoles = ({ params, body }, res) => {
+    (0, service_1.updateInstituteRolesService)(params, Object.assign({ instituteId: params.instituteId }, body))
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const deleteInstituteRole = ({ params }, res) => {
-  deleteInstituteRoleService(params)
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.updateInstituteRoles = updateInstituteRoles;
+const deleteInstituteRole = ({ params }, res) => {
+    (0, service_1.deleteInstituteRoleService)(params)
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const getInstituteFeature = ({ params, query }, res) => {
-  getInstituteFeatureService(params, query)
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.deleteInstituteRole = deleteInstituteRole;
+const getInstituteFeature = ({ params, query }, res) => {
+    (0, service_1.getInstituteFeatureService)(params, query)
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const updateInstituteFeature = ({ params, body }, res) => {
-  updateInstituteFeatureService(params, {
-    instituteId: params.instituteId,
-    ...body,
-  })
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.getInstituteFeature = getInstituteFeature;
+const updateInstituteFeature = ({ params, body }, res) => {
+    (0, service_1.updateInstituteFeatureService)(params, Object.assign({ instituteId: params.instituteId }, body))
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const updateUserRole = ({ params, body }, res) => {
-  updateUserRoleService(params, { instituteId: params.instituteId, ...body })
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.updateInstituteFeature = updateInstituteFeature;
+const updateUserRole = ({ params, body }, res) => {
+    (0, service_1.updateUserRoleService)(params, Object.assign({ instituteId: params.instituteId }, body))
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const deleteUserRole = ({ params }, res) => {
-  deleteUserRoleService(params)
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.updateUserRole = updateUserRole;
+const deleteUserRole = ({ params }, res) => {
+    (0, service_1.deleteUserRoleService)(params)
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const getUsersByRoleId = ({ params, body }, res) => {
-  getUsersByRoleIdService({ roleId: params.roleId, ...body })
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.deleteUserRole = deleteUserRole;
+const getUsersByRoleId = ({ params, body }, res) => {
+    (0, service_1.getUsersByRoleIdService)(Object.assign({ roleId: params.roleId }, body))
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
-
-export const getRolesByUserId = ({ params, body }, res) => {
-  getRolesByUserIdService({ userId: params.userId, ...body })
-    .then(success(res, 200))
-    .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
+exports.getUsersByRoleId = getUsersByRoleId;
+const getRolesByUserId = ({ params, body }, res) => {
+    (0, service_1.getRolesByUserIdService)(Object.assign({ userId: params.userId }, body))
+        .then((0, response_1.success)(res, 200))
+        .catch((err) => res.status(err && err.status ? err.status : 400).json(err));
 };
+exports.getRolesByUserId = getRolesByUserId;

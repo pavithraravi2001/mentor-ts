@@ -1,32 +1,18 @@
-import { middleware as body } from "bodymen";
-import { Router } from "express";
-import {
-  createCatalogue,
-  deleteCatalogueByGroupName,
-  getBranchesByGroupName,
-  updateCatalogue,
-} from "./controller";
-import { schema } from "./model";
-export Catalogue, { schema } from "./model";
-
-const router = new Router();
-const {
-  _id,
-  groupName,
-  instituteName,
-  branch,
-  board,
-  addressLine1,
-  addressLine2,
-  addressLine3,
-} = schema.tree;
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const bodymen_1 = require("bodymen");
+const express_1 = require("express");
+const controller_1 = require("./controller");
+const model_1 = require("./model");
+Catalogue, { schema: model_1.schema };
+from;
+"./model";
+const router = new express_1.Router();
+const { _id, groupName, instituteName, branch, board, addressLine1, addressLine2, addressLine3, } = model_1.schema.tree;
 /**
  * @api {post} /metadatacontents Create metadataContent
  */
-router.post(
-  "/",
-  body({
+router.post("/", (0, bodymen_1.middleware)({
     groupName,
     instituteName,
     branch,
@@ -34,21 +20,15 @@ router.post(
     addressLine1,
     addressLine2,
     addressLine3,
-  }),
-  createCatalogue
-);
-
+}), controller_1.createCatalogue);
 /**
  * @api {get} /metadatacontents/:contentKey Retrieve metadataContent
  */
-router.get("/:groupName", getBranchesByGroupName);
-
+router.get("/:groupName", controller_1.getBranchesByGroupName);
 /**
  * @api {get} /metadatacontents Update metadataContent
  */
-router.put(
-  "/:id",
-  body({
+router.put("/:id", (0, bodymen_1.middleware)({
     _id,
     groupName,
     instituteName,
@@ -57,13 +37,9 @@ router.put(
     addressLine1,
     addressLine2,
     addressLine3,
-  }),
-  updateCatalogue
-);
-
+}), controller_1.updateCatalogue);
 /**
  * @api {get} /metadatacontents/:contentKey Delete metadataContent
  */
-router.delete("/:groupName", deleteCatalogueByGroupName);
-
-export default router;
+router.delete("/:groupName", controller_1.deleteCatalogueByGroupName);
+exports.default = router;

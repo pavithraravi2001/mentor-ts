@@ -1,20 +1,40 @@
-import mongoose, { Schema } from "mongoose";
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.schema = exports.Student = void 0;
+const mongoose_1 = __importStar(require("mongoose"));
 const mongoosePaginate = require("mongoose-paginate-v2");
-
-const supportDocument = new Schema(
-  {
+const supportDocument = new mongoose_1.Schema({
     documentUrl: String,
     documentType: String,
     fileKey: String,
     originalFileName: String,
-  },
-  {
+}, {
     _id: false,
-  }
-);
-
-const studentInterest = new Schema(
-  {
+});
+const studentInterest = new mongoose_1.Schema({
     sportsEvent: String,
     skillLevel: String,
     nameOfTheEvent: String,
@@ -22,41 +42,33 @@ const studentInterest = new Schema(
     competitionType: String,
     nameOfTheLanguage: String,
     level: String,
-  },
-  {
+}, {
     _id: false,
-  }
-);
-
-const studentAchievement = new Schema(
-  {
+});
+const studentAchievement = new mongoose_1.Schema({
     eventName: String,
     winnerLevel: String,
     location: String,
     year: String,
     description: String,
-  },
-  {
+}, {
     _id: false,
-  }
-);
-
-const StudentSchema = new Schema(
-  {
-    userId: mongoose.Schema.Types.ObjectId,
+});
+const StudentSchema = new mongoose_1.Schema({
+    userId: mongoose_1.default.Schema.Types.ObjectId,
     applicationNumber: Number,
     _enrollNo: Number,
     enrollNumber: String,
     isActive: {
-      type: Boolean,
-      default: true,
+        type: Boolean,
+        default: true,
     },
-    instituteId: mongoose.Schema.Types.ObjectId,
+    instituteId: mongoose_1.default.Schema.Types.ObjectId,
     boardName: String,
     schoolName: String,
     classGrade: {
-      type: String,
-      alias: "admissionFor",
+        type: String,
+        alias: "admissionFor",
     },
     section: String,
     firstName: String,
@@ -141,8 +153,8 @@ const StudentSchema = new Schema(
     paymentMode: String,
     admissionFee: String,
     admissionPaymentId: {
-      type: String,
-      index: true,
+        type: String,
+        index: true,
     },
     admissionPaymentStatus: String,
     admissionStatus: String,
@@ -158,20 +170,16 @@ const StudentSchema = new Schema(
     tag: Object,
     studentPhoto: supportDocument,
     otherDocument: [supportDocument],
-  },
-  {
+}, {
     strict: true,
     timestamps: {
-      updatedAt: "lastUpdated",
+        updatedAt: "lastUpdated",
     },
     toJSON: {
-      virtuals: true,
+        virtuals: true,
     },
-  }
-);
-
+});
 StudentSchema.plugin(mongoosePaginate);
-export const Student = mongoose.model("Student", StudentSchema);
-
-export const schema = Student.schema;
+exports.Student = mongoose_1.default.model("Student", StudentSchema);
+exports.schema = exports.Student.schema;
 //export default model;

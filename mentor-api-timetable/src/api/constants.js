@@ -1,4 +1,5 @@
-import { validationRegx } from "./student/validator";
-export default {
-  FEATURE_VIEW_ALL_USERS: ["MENE-01"],
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
+    FEATURE_VIEW_ALL_USERS: ["MENE-01"],
 };

@@ -1,37 +1,53 @@
-import mongoose, { Schema } from "mongoose";
-
-const dayOrder = new Schema(
-  {
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.schema = exports.InstituteWorkHours = void 0;
+const mongoose_1 = __importStar(require("mongoose"));
+const dayOrder = new mongoose_1.Schema({
     day: String,
     type: String,
     startTime: String,
     endTime: String,
-  },
-  {
+}, {
     _id: false,
-  }
-);
-
-const InstituteWorkingHoursModel = new Schema(
-  {
-    instituteId: mongoose.Schema.Types.ObjectId,
+});
+const InstituteWorkingHoursModel = new mongoose_1.Schema({
+    instituteId: mongoose_1.default.Schema.Types.ObjectId,
     workingHours: [dayOrder],
     tag: Object,
-  },
-  {
+}, {
     strict: true,
     timestamps: {
-      updatedAt: "lastUpdated",
+        updatedAt: "lastUpdated",
     },
     toJSON: {
-      virtuals: true,
+        virtuals: true,
     },
-  }
-);
-
-const Deprecated = new Schema(
-  {
-    instituteId: mongoose.Schema.Types.ObjectId,
+});
+const Deprecated = new mongoose_1.Schema({
+    instituteId: mongoose_1.default.Schema.Types.ObjectId,
     monday: dayOrder,
     tuesday: dayOrder,
     wednesday: dayOrder,
@@ -40,21 +56,14 @@ const Deprecated = new Schema(
     saturday: dayOrder,
     sunday: dayOrder,
     tag: Object,
-  },
-  {
+}, {
     strict: true,
     timestamps: {
-      updatedAt: "lastUpdated",
+        updatedAt: "lastUpdated",
     },
     toJSON: {
-      virtuals: true,
+        virtuals: true,
     },
-  }
-);
-
-export const InstituteWorkHours = mongoose.model(
-  "InstituteWorkHours",
-  InstituteWorkingHoursModel
-);
-
-export const schema = InstituteWorkHours.schema;
+});
+exports.InstituteWorkHours = mongoose_1.default.model("InstituteWorkHours", InstituteWorkingHoursModel);
+exports.schema = exports.InstituteWorkHours.schema;

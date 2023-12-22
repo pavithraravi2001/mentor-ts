@@ -1,12 +1,13 @@
-import { Router } from "express";
-import { SWAGGER_API_HOST } from "../../config";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const config_1 = require("../../config");
 const path = require("path");
-const router = new Router();
+const router = new express_1.Router();
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const yamlPath = path.join(__dirname, "/swagger.yaml");
 const swaggerDocument = YAML.load(yamlPath);
-swaggerDocument.host = SWAGGER_API_HOST;
+swaggerDocument.host = config_1.SWAGGER_API_HOST;
 router.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-export default router;
+exports.default = router;

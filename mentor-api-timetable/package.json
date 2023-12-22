@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "Mentor Core Team",
   "scripts": {
-    "start": "node .",
+    "start": "tsc && node dist/index.js",
     "test": "jest --detectOpenHandles",
     "test-debug": "jest --detectOpenHandles",
     "coverage": "npm test -- --coverage",

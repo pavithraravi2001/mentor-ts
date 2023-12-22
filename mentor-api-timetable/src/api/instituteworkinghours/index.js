@@ -1,25 +1,18 @@
-import { Router } from "express";
-import {
-  deleteInstituteWorkingHours,
-  getInstituteWorkingHours,
-  updateInstituteWorkingHours,
-} from "./controller";
-
-const router = new Router();
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controller_1 = require("./controller");
+const router = new express_1.Router();
 /**
  * @api {get} /instituteworkinghours
  */
-router.get("/", getInstituteWorkingHours);
-
+router.get("/", controller_1.getInstituteWorkingHours);
 /**
  * @api {put} /instituteworkinghours Update Institute working hours
  */
-router.put("/", updateInstituteWorkingHours);
-
+router.put("/", controller_1.updateInstituteWorkingHours);
 /**
  * @api {delete} /instituteworkinghours Delete Institute working hours
  */
-router.delete("/", deleteInstituteWorkingHours);
-
-export default router;
+router.delete("/", controller_1.deleteInstituteWorkingHours);
+exports.default = router;
