@@ -1,0 +1,4890 @@
+swagger: "2.0"
+info:
+  description: "Interactive Mentor API documentation"
+  version: "1.0.0"
+  title: "Mentor API Doc"
+host: "localhost:9200"
+basePath: "/"
+tags:
+  - name: "Users"
+    description: "Users and Auths APIs"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /users:
+    post:
+      tags:
+        - "Users"
+      summary: "Register new user"
+      description: ""
+      operationId: "registerUsers"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User object for registration"
+          required: true
+          schema:
+            $ref: "#/definitions/Users"
+      responses:
+        "400":
+          description: "Invalid input"
+        "201":
+          description: "User registration completed successfully"
+      security:
+        - petstore_auth:
+            - "write:pets"
+            - "read:pets"
+  /users/email-verifications:
+    post:
+      tags:
+        - "Users"
+      summary: "Resend the email-verifications link"
+      description: ""
+      operationId: "resendEmailVerifications"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Resend email verifications information"
+          required: true
+          schema:
+            $ref: "#/definitions/ResendVerifyEmail"
+      responses:
+        "201":
+          description: "A verification email has been resent successfully."
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid params supplied"
+  /users/email-verifications/{token}:
+    put:
+      tags:
+        - "Users"
+      summary: "Verify the users email using token link"
+      description: ""
+      operationId: "emailVerifications"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "token"
+          in: "path"
+          description: "token that used to be verified"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "User verified successfully"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid params supplied"
+  /users/login:
+    post:
+      tags:
+        - "Users"
+      summary: "Logs user into the system"
+      description: ""
+      operationId: "loginUser"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User object for registration"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginUser"
+      responses:
+        "201":
+          description: "User logged-in successfully"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /users/{email}:
+    get:
+      tags:
+        - "Users"
+      summary: "Get user by email"
+      description: ""
+      operationId: "getUserByEmail"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "email"
+          in: "path"
+          description: "The email that needs to be fetched. Use tamilselvanvjm@gmail.com for testing. "
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Users"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+  /users/password-resets:
+    post:
+      tags:
+        - "Users"
+      summary: "Users do reset/forgot password here"
+      description: ""
+      operationId: "userPasswordResets"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Password reset object"
+          required: true
+          schema:
+            $ref: "#/definitions/PasswordResets"
+      responses:
+        "200":
+          description: "Password reset link generated and sent to email"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /users/password-resets/{token}:
+    get:
+      tags:
+        - "Users"
+      summary: "Get reset token details/exists check by token"
+      description: ""
+      operationId: "getResetToken"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "token"
+          in: "path"
+          description: "The token that needs to be fetched."
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TokenResponse"
+        "400":
+          description: "Invalid username supplied"
+        "404":
+          description: "User not found"
+    put:
+      tags:
+        - "Users"
+      summary: "Submit password-resets token and password"
+      description: "This can only be done by the logged in user."
+      operationId: "resetPassword"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "token"
+          in: "path"
+          description: "token that used to be updated"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "password body"
+          required: true
+          schema:
+            $ref: "#/definitions/password"
+      responses:
+        "200":
+          description: "New password has been updated"
+        "400":
+          description: "Invalid params supplied"
+        "404":
+          description: "Token not found"
+  /metadatacontents:
+    post:
+      tags:
+        - "MetadataContents"
+      summary: "Adding Metadata Content"
+      description: ""
+      operationId: "addMetadataContent"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding MetadataContent object"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataContent"
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+        - "MetadataContents"
+      summary: "Modifying Metadata Content"
+      description: ""
+      operationId: "changeMetadataContent"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Editing MetadataContent object"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataContent"
+      responses:
+        "405":
+          description: "Invalid input"
+  /metadatacontents/{contentKey}:
+    get:
+      tags:
+        - "MetadataContents"
+      summary: "Fetch Metadata Content"
+      description: "Retrieve the content"
+      operationId: "getMetadataContent"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "contentKey"
+          in: "path"
+          description: "The content key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataContent"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "MetadataContents"
+      summary: "Remove Metadata Content"
+      description: "Delete the Metatdata Content"
+      operationId: "deleteMetadataContent"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "contentKey"
+          in: "path"
+          description: "The content key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadatastaticcollections:
+    post:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Adding Metadata Static Collection"
+      description: ""
+      operationId: "addMetadataStaticCollection"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Metadata Static Collection object"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataCollection"
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Modifying Metadata Static Collection"
+      description: ""
+      operationId: "changeMetadataStaticCollection"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Editing Metadata Static Collection object"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataCollection"
+      responses:
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Fetch all Metadata Static Collection"
+      description: "Retrieve all static collection"
+      operationId: "getMetadataStaticCollection"
+      produces:
+        - "application/json"
+      parameters:
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataCollection"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadatastaticcollections/{collectionName}:
+    get:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Fetch Metadata Static Collection"
+      description: "Retrieve the static collection"
+      operationId: "getMetadataStaticCollection"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "collectionName"
+          in: "path"
+          description: "The collection name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataCollection"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Remove Metadata Static Collection"
+      description: "Delete the Metatdata Static collection"
+      operationId: "deleteMetadataStaticCollection"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "collectionName"
+          in: "path"
+          description: "The content key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadatastaticcollections/dropdown/{collectionName}:
+    get:
+      tags:
+        - "metadatastaticcollections"
+      summary: "Fetch Metadata Static Collection to fill dropdown"
+      description: "Retrieve the static collection to fill dropdown"
+      operationId: "getMetadataStaticCollectionForDropDown"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "collectionName"
+          in: "path"
+          description: "The collection name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataCollection"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /catalogues:
+    post:
+      tags:
+        - "Catalogues"
+      summary: "Adding Branch to a Group"
+      description: ""
+      operationId: "addBranchToGroup"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding branch"
+          required: true
+          schema:
+            $ref: "#/definitions/Catalogue"
+      responses:
+        "405":
+          description: "Invalid input"
+  /catalogues/{id}:
+    put:
+      tags:
+        - "Catalogues"
+      summary: "Modifying branch"
+      description: ""
+      operationId: "updateCatalogue"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Editing branch details"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Editing branch details"
+          required: true
+          schema:
+            $ref: "#/definitions/Catalogue"
+      responses:
+        "405":
+          description: "Invalid input"
+  /catalogues/{groupName}:
+    get:
+      tags:
+        - "Catalogues"
+      summary: "Fetch branches of a group"
+      description: "Retrieve branches of a group"
+      operationId: "getBranchesByGroupName"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "The group name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Catalogue"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "Catalogues"
+      summary: "Remove a branch from a group"
+      description: "Delete a branch form a group"
+      operationId: "deleteCatalogueByGroupName"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupName"
+          in: "path"
+          description: "The group name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadatafeeconcessions:
+    post:
+      tags:
+        - "MetadataFeeConcessions"
+      summary: "Adding new fee concessiontype"
+      description: ""
+      operationId: "addMetadataFeeConcession"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Add a new fee concession type"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataFeeConcession"
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+        - "MetadataFeeConcessions"
+      summary: "Modifying fee concessiontype"
+      description: ""
+      operationId: "updateFeeConcession"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Editing fee concession type"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataFeeConcession"
+      responses:
+        "200": 
+          description: "Successful Operation"
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "MetadataFeeConcessions"
+      summary: "Fetch all fee concession type"
+      description: "Retrieve all fee concession type"
+      operationId: "getAllMetadataFeeConcession"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "MetadataFeeConcession"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadatafeeconcessions/{concessionKey}:
+    get:
+      tags:
+        - "MetadataFeeConcessions"
+      summary: "Fetch a fee concession type"
+      description: "Retrieve a fee concession type"
+      operationId: "getMetadataFeeConcession"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "concessionKey"
+          in: "path"
+          description: "The concession key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataFeeConcession"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "MetadataFeeConcessions"
+      summary: "Remove a fee concession type"
+      description: "Delete a fee concession type"
+      operationId: "deleteMetadataFeeConcession"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "concessionKey"
+          in: "path"
+          description: "The concession key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /metadataschemas:
+    post:
+      tags:
+        - "MetadataSchemas"
+      summary: "Adding Metadata Schema"
+      description: ""
+      operationId: "addMetadataSchema"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Metadata Schema"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataSchema"
+      responses:
+        "405":
+          description: "Invalid input"
+    put:
+      tags:
+        - "MetadataSchemas"
+      summary: "Modifying Metadata Schema"
+      description: ""
+      operationId: "changeMetadataSchema"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Editing Metadata Schema object"
+          required: true
+          schema:
+            $ref: "#/definitions/MetadataSchema"
+      responses:
+        "405":
+          description: "Invalid input"
+  /metadataschemas/{entityName}:
+    get:
+      tags:
+        - "MetadataSchemas"
+      summary: "Fetch the Metatdata Schema"
+      description: "Retrieve the Metatdata Schema"
+      operationId: "getMetadataStaticCollection"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "entityName"
+          in: "path"
+          description: "The entity name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "MetadataSchema"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "MetadataSchemas"
+      summary: "Remove the Metatdata Schema"
+      description: "Delete the Metatdata Schema"
+      operationId: "deleteMetadataSchema"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "entityName"
+          in: "path"
+          description: "The entity name"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /applications:
+    post:
+      tags:
+        - "Applications"
+      summary: "Adding application"
+      description: ""
+      operationId: "addApplication"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Application"
+          required: true
+          schema:
+            $ref: "#/definitions/Application"
+      responses:
+        "405":
+          description: "Invalid input"
+  /applications/{id}:
+    put:
+      tags:
+        - "Applications"
+      summary: "Modifying an existing Application"
+      description: ""
+      operationId: "changeApplication"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Application Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Application object"
+          required: true
+          schema:
+            $ref: "#/definitions/Application"
+      responses:
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "Applications"
+      summary: "Fetch Application"
+      description: "Retrieve the application"
+      operationId: "getApplication"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Application Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Application"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "Applications"
+      summary: "Remove an application"
+      description: "Delete an application"
+      operationId: "deleteApplication"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Application Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /applications/admissions:
+    get:
+      tags:
+        - "Applications"
+      summary: "Search Application"
+      description: "Retrieve the application"
+      operationId: "searchApplications"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: "integer"
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: "integer"
+          description: The numbers of items to return
+        - in: query
+          name: table_name
+          required: true
+          schema:
+            type: "string"
+          description: It is used to filter required columns for table in UI
+        - in: query
+          name: status
+          required: true
+          schema:
+            type: "string"
+          description: Used to filter out by status
+        - in: query
+          name: sort_by
+          required: true
+          schema:
+            type: "string"
+          description: Field name to sort
+        - in: query
+          name: sort_order
+          required: true
+          schema:
+            type: "string"
+          description: Sorting order ex:- asc or desc
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Application"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+    put:
+      tags:
+        - "Applications"
+      summary: "Update application status using Application IDs"
+      description: "Update application"
+      operationId: "updateApplicationAdmissionStatus"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "application admission status"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateApplicationStatus"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/UpdateApplicationStatus"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+  /applications/admissions/status-reports/{applicationId}:
+    get:
+      tags:
+        - "Applications"
+      summary: "Fetch application status report"
+      description: "Retrieve the application status report"
+      operationId: "getApplicationStatusReport"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "Application Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "ApplicationStatusReport"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /applications/admissions/schedulers:
+    post:
+      tags:
+        - "Applications"
+      summary: "Add application admission schedule"
+      description: "Save application admission schedule"
+      operationId: "addApplicationAdmissionSchedule"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "schedule"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+    get:
+      tags:
+        - "Applications"
+      summary: "Search Application Admission Schedule"
+      description: "Retrieve the schedulers"
+      operationId: "searchApplicationSchedulers"
+      produces:
+        - "application/json"
+      parameters:
+        - in: query
+          name: offset
+          schema:
+            type: "integer"
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: limit
+          schema:
+            type: "integer"
+          description: The numbers of items to return
+        - in: query
+          name: table_name
+          required: true
+          schema:
+            type: "String"
+          description: It is used to filter required columns for table in UI
+        - in: query
+          name: interviewDate
+          required: true
+          schema:
+            type: "String"
+          description: Used to filter out by status
+        - in: query
+          name: sort_by
+          required: true
+          schema:
+            type: "String"
+          description: Field name to sort
+        - in: query
+          name: sort_order
+          required: true
+          schema:
+            type: "String"
+          description: Sorting order ex:- asc or desc
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ApplicationScheduler"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+  /applications/admissions/schedulers/{scheduleId}/notifications:
+    put:
+      tags:
+        - "Applications"
+      summary: "Resend the interview schedule email"
+      description: "Resend the interview schedule email"
+      operationId: "remindApplicationAdmissionSchedule"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "scheduleId"
+          in: "path"
+          description: "scheduleId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "schedule"
+          required: false
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+  /applications/admissions/schedulers/{scheduleId}:
+    put:
+      tags:
+        - "Applications"
+      summary: "Update application admission schedule"
+      description: "Update application admission schedule"
+      operationId: "updateApplicationAdmissionSchedule"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "scheduleId"
+          in: "path"
+          description: "scheduleId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "schedule"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+    delete:
+      tags:
+        - "Applications"
+      summary: "Cancel application admission schedule"
+      description: "Cancel application admission schedule"
+      operationId: "cancelApplicationAdmissionSchedule"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "scheduleId"
+          in: "path"
+          description: "scheduleId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/ApplicationScheduler"
+        "400":
+          description: "Internal server error"
+          schema:
+            type: "string"
+  /applications/user/{userid}:
+    get:
+      tags:
+        - "Applications"
+      summary: "Fetch all applications for passed user id"
+      description: "Retrieve the applications belong to user"
+      operationId: "getApplicationsByUserId"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userid"
+          in: "path"
+          description: "User Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Application"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Application"
+  /applications/analytics/calendar/{type}:
+    get:
+      tags:
+        - "Applications"
+      summary: "Analytics API Yearwise"
+      description: "Retrieve applications Yearwise"
+      operationId: "getApplicationsForAnalyticCalendar"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "type"
+          in: "path"
+          description: "dashboard | gradewise | statuswise | payment | genderwise"
+          required: true
+          type: "string"
+          enum:
+            - "dashboard"
+            - "gradewise"
+            - "statuswise"
+            - "payment"
+            - "genderwise"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Application"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /applications/analytics/{type}:
+    get:
+      tags:
+        - "Applications"
+      summary: "Analytics API"
+      description: "Retrieve applications"
+      operationId: "getApplicationsForAnalytics"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "type"
+          in: "path"
+          description: "dashboard | gradewise | statuswise | payment | genderwise"
+          required: true
+          type: "string"
+          enum:
+            - "dashboard"
+            - "gradewise"
+            - "statuswise"
+            - "payment"
+            - "genderwise"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Application"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /payment-integrations/application-payment-initialization/{applicationId}:
+    get:
+      tags:
+        - "Payment Integrations"
+      summary: "To initiate payment request for the application"
+      description: "To initiate payment request for the application and get the dynamic hidden form fields for payment submission"
+      operationId: "applicationPaymentInitialization"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "applicationId"
+          in: "path"
+          description: "Application Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PaymentFormFields"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "string"
+  /payment-integrations/application-payment-configs:
+    get:
+      tags:
+        - Payment Integrations
+      summary: "Fetch Payment Configs"
+      description: "Retreive Payment Config"
+      operationId: "getPaymentConfig"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/PaymentConfigs"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /payment-integrations/admission-payment-configs:
+    get:
+      tags:
+        - Payment Integrations
+      summary: "To initiate payment request for the application"
+      description: "To initiate payment request for the application and get the dynamic hidden form fields for payment submission"
+      operationId: "getAdmissionPaymentConfig"
+      produces:
+        - "application/json"
+      parameters:
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PaymentConfigs"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "string"
+  /payment-integrations/application-payment/callback:
+    post:
+      tags:
+        - "Payment Integrations"
+      summary: "PayTM callback - webhook"
+      description: |
+        Customer fills the payment details and is redirected to bank page for authorization.
+        Once the transaction is authorized, Paytm receives the response from the bank
+        and returns a status to your website via your callback URL.
+      operationId: "applicationPaymentCallback"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Payment transaction information"
+          required: true
+          schema:
+            $ref: "#/definitions/PayTMApplicationPaymentCallback"
+      responses:
+        "200":
+          description: "It will be redirected to application confirmation page"
+          schema:
+            type: "string"
+          headers:
+            X-Rate-Limit:
+              type: "integer"
+              format: "int32"
+              description: "calls per hour allowed by the user"
+            X-Expires-After:
+              type: "string"
+              format: "date-time"
+              description: "date in UTC when token expires"
+        "400":
+          description: "Invalid username/password supplied"
+  /documents:
+    post:
+      tags:
+        - "Documents"
+      summary: "Upload document"
+      description: ""
+      operationId: "addApplication"
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "formData"
+          name: "file"
+          type: "file"
+          description: "File to upload"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /documents/{filekey}:
+    get:
+      tags:
+        - "Documents"
+      summary: "Download a document"
+      description: "Download a file"
+      operationId: "getDocumentByFileKey"
+      produces:
+        - "application/file"
+      parameters:
+        - name: "filekey"
+          in: "path"
+          description: "File Key"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "file"
+        "404":
+          description: "Notfound"
+  /employees:
+    post:
+      tags:
+        - "Employees"
+      summary: "Adding Employee"
+      description: ""
+      operationId: "addEmployee"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Employee"
+          required: true
+          schema:
+            $ref: "#/definitions/Employee"
+      responses:
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "Employees"
+      summary: "Fetch all Employees"
+      description: "Retrieve all Employees"
+      operationId: "getEmployees"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/Employee"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /employees/search:
+    get:
+      tags:
+        - Employees
+      summary: "Search Student"
+      description: ""
+      operationId: "searchStudent"
+      produces:
+          - "application/json"
+      parameters:
+          - in: query
+            name: offset
+            schema:
+            type: "integer"
+            description: The number of items to skip before starting to collect the result set
+          - in: query
+            name: limit
+            schema:
+            type: "integer"
+            description: The numbers of items to return
+          - in: query
+            name: table_name
+            required: true
+            schema:
+            type: "string"
+            description: It is used to filter required columns for table in UI
+          - in: query
+            name: sort_by
+            required: false
+            schema:
+            type: "string"
+            description: Field name to sort
+          - in: query
+            name: sort_order
+            required: false
+            schema:
+            type: "string"
+            description: Sorting order ex:- asc or desc
+      responses:
+          "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+            $ref: "#/definitions/Employee"
+          "400":
+          description: "Internal server error"
+          schema:
+          type: "string"
+  /employees/{id}:
+    put:
+      tags:
+        - "Employees"
+      summary: "Modifying an existing exployee"
+      description: ""
+      operationId: "changeEmployee"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Employee object"
+          required: true
+          schema:
+            $ref: "#/definitions/Employee"
+      responses:
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "Employees"
+      summary: "Fetch Employee by object id"
+      description: "Retrieve the Employee"
+      operationId: "getEmployee"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Employee"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "Employees"
+      summary: "Remove an employee"
+      description: "Delete an employee"
+      operationId: "deleteEmployee"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /employees/empid/{id}:
+    get:
+      tags:
+        - "Employees"
+      summary: "Fetch Employee by Employee ID"
+      description: "Retrieve the Employee"
+      operationId: "getEmployee"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Emp Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Employee"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /employees/enroll/{id}:
+    put:
+      tags:
+        - Employees
+      summary: "Modifying an existing exployee"
+      description: ""
+      operationId: "updateEmployeeEnroll"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Employee object"
+          required: true
+          schema:
+            $ref: "#/definitions/Employee"
+      responses:
+        "405":
+          description: "Invalid input"
+  /employees/submit/{id}:
+    put:
+      tags:
+        - Employees
+      summary: "Modifying an existing exployee"
+      description: ""
+      operationId: "updateEmployeeSubmit"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Employee object"
+          required: true
+          schema:
+            $ref: "#/definitions/Employee"
+      responses:
+        "405":
+          description: "Invalid input"
+  /employees/student/analytics/{type}:
+    get:
+      tags:
+        - "Employees"
+      summary: "Analytics API"
+      description: "Retrieve employee analytics"
+      operationId: "getEmployeesForAnalytics"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "type"
+          in: "path"
+          description: "Total Employee | Administrative | Faculty | Support Staff | Total Student" 
+          required: true
+          type: "string"
+          enum:
+            - "Total Employee"
+            - "Administrative"
+            - "Faculty"
+            - "Support Staff"
+            - "Total Student"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Employee"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /employees/{instituteId}/teaching-employee:
+    get:
+      tags:
+        - "Employees"
+      summary: "Fetch Teaching Employee"
+      description: "Retrieve the Teaching Employee"
+      operationId: "getTeachingEmployees"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Employee"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students:
+    post:
+      tags:
+        - "Students"
+      summary: "Adding Student"
+      description: ""
+      operationId: "createStudent"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Student"
+          required: true
+          schema:
+            $ref: "#/definitions/Student"
+      responses:
+        "405":
+          description: "Invalid input"
+    get:
+      tags:
+        - "Students"
+      summary: "Fetch all Students"
+      description: "Retrieve all Student"
+      operationId: "getStudents"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students/{id}/interests:
+    get:
+      tags:
+        - "Students"
+      summary: "Fetch Student Interest by object id"
+      description: "Retrieve the Student Interest"
+      operationId: "getStudentInterstsById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students/{id}/achievements:
+    get:
+      tags:
+        - "Students"
+      summary: "Fetch Student Achievements by object id"
+      description: "Retrieve the Student Achievements"
+      operationId: "getStudentAchievementsById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students/enroll:
+    post:
+      tags:
+        - "Students"
+      summary: "Adding Student from applications"
+      description: ""
+      operationId: "addStudentFromApplications"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Application details"
+          required: true
+          schema:
+            $ref: "#/definitions/StudentFromApplication"
+      responses:
+        "405":
+          description: "Invalid input"
+  /students/{id}:
+    get:
+      tags:
+        - "Students"
+      summary: "Fetch Student by object id"
+      description: "Retrieve the Student"
+      operationId: "getStudent"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - Students
+      summary: "Modifying an existing student"
+      description: ""
+      operationId: "updateStudent"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Student object"
+          required: true
+          schema:
+            $ref: "#/definitions/Student"
+      responses:
+        "405":
+          description: "Invalid input"
+  /students/{instituteId}/all:
+    get:
+      tags:
+        - Students
+      summary: "Fetch Student by Student ID"
+      description: "Retrieve the Student List"
+      operationId: "getStudentList"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students/enrollnumber/{enrollnumber}:
+    get:
+      tags:
+        - "Students"
+      summary: "Fetch Student by Student ID"
+      description: "Retrieve the Student"
+      operationId: "getStudent"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "enrollnumber"
+          in: "path"
+          description: "Enroll Number"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Student"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /students/search:
+    get:
+        tags:
+          - "Students"
+        summary: "Search Student"
+        description: ""
+        operationId: "searchStudent"
+        produces:
+          - "application/json"
+        parameters:
+          - in: query
+            name: offset
+            schema:
+            type: "integer"
+            description: The number of items to skip before starting to collect the result set
+          - in: query
+            name: limit
+            schema:
+            type: "integer"
+            description: The numbers of items to return
+          - in: query
+            name: table_name
+            required: true
+            schema:
+            type: "string"
+            description: It is used to filter required columns for table in UI
+          - in: query
+            name: sort_by
+            required: false
+            schema:
+            type: "string"
+            description: Field name to sort
+          - in: query
+            name: sort_order
+            required: false
+            schema:
+            type: "string"
+            description: Sorting order ex:- asc or desc
+          - in: query
+            name: class
+            required: false
+            schema:
+            type: "string"
+            description: class grade
+          - in: query
+            name: section
+            required: false
+            schema:
+            type: "string"
+            description: Section
+          - in: query
+            name: query
+            required: false
+            schema:
+            type: "string"
+            description: Search Query
+        responses:
+          "200":
+        description: "successful operation"
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/Student"
+          "400":
+        description: "Internal server error"
+        schema:
+          type: "string"         
+  /students/upload:
+    post:
+      tags:
+        - "Students"
+      summary: "Adding Bulk Student"
+      description: ""
+      operationId: "addBulkStudent"
+      consumes:
+        - "multipart/form-data"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "formData"
+          name: "file"
+          type: "file"
+          description: "File to upload"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+  /institutes:
+    post:
+      tags:
+        - "Institutes"
+      summary: "Adding Institute"
+      description: ""
+      operationId: "addInstitute"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Adding Institute"
+          required: true
+          schema:
+            $ref: "#/definitions/Institute"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+    get:
+      tags:
+        - "Institutes"
+      summary: "Fetch all Institutes"
+      description: "Retrieve all Institutes"
+      operationId: "getInstitutes"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/Institute"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /institutes/{id}:
+    put:
+      tags:
+        - "Institutes"
+      summary: "Modifying an existing institute information"
+      description: ""
+      operationId: "changeInstitute"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Editing Institute object"
+          required: true
+          schema:
+            $ref: "#/definitions/Institute"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+    get:
+      tags:
+        - "Institutes"
+      summary: "Fetch Institute by object id"
+      description: "Retrieve the Institute"
+      operationId: "getInstitute"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Institute"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "Institutes"
+      summary: "Remove an institutes"
+      description: "Delete an institute"
+      operationId: "deleteInstitute"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "object Id"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /institutes/{instituteId}/period-times:
+    put:
+      tags:
+        - "Institute Period Times"
+      summary: "Add or update period times"
+      description: ""
+      operationId: "updateInstitutePeriodTime"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Institute period times array"
+          required: true
+          schema:
+            $ref: "#/definitions/InstitutePeriodTimes"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+    get:
+      tags:
+        - "Institute Period Times"
+      summary: "Fetch Institute Institute Period Times by institute id"
+      description: "Retrieve the Institute Period Times"
+      operationId: "getInstitutePeriodTime"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstitutePeriodTimes"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /institutes/{instituteId}/holidays:
+    put:
+      tags:
+        - "Institute holidays"
+      summary: "Add or update holidays"
+      description: ""
+      operationId: "updateInstituteHolidays"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Institute holidays array"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteHolidayModel"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+    get:
+      tags:
+        - "Institute holidays"
+      summary: "Fetch Institute holiday by institute id and academicYear"
+      description: "Retrieve the Institute holidays"
+      operationId: "getInstituteHoliday"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: query
+          name: academicYear
+          schema:
+            type: "string"
+          description: academicYear
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteHoliday"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /instituteworkinghours:
+    put:
+      tags:
+        - "Institute Working Hours"
+      summary: "Add/Update institute working hours"
+      description: ""
+      operationId: "upsert Institute working hours"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Working Hours object"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteWorkingHours"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+    get:
+      tags:
+        - Institute Working Hours
+      summary: "Fetch Institute Working Hours"
+      description: "Retreive Institute Working Hours"
+      operationId: "getInstituteWorkingHours"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/InstituteWorkingHours"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    delete:
+      tags:
+        - "Institute Working Hours"
+      summary: "Remove an institute working hours"
+      description: "Delete an institute working hours"
+      operationId: "deleteInstitute"
+      produces:
+        - "application/json"
+      parameters:
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /institutes/{instituteId}/classes:
+    get:
+      tags:
+        - Institute Classes
+      summary: "Fetch Institute Classes"
+      description: "Retrieve the Institute Classes"
+      operationId: "getInstituteClasses"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Institute Classes"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteClassModel"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put: 
+      tags:
+        - "Institute Classes"
+      summary: "Add/Update institute Classes"
+      description: ""
+      operationId: "upsert Institute classes"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Classes"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Classes"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteClassModel"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+  /institutes/{instituteId}/subjects:
+    get:
+      tags:
+        - Institute Subjects
+      summary: "Fetch Institute Subjects"
+      description: "Retrieve the Institute Subjects"
+      operationId: "getInstituteSubjects"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Institute Subjects"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteSubjects"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - Institute Subjects
+      summary: "Add/Update institute Subjects"
+      description: ""
+      operationId: "upsert Institute subjects"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Announcement"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Announcement"
+          required: true
+          schema:
+            $ref: "#/definitions/SubjectModel"
+      responses:
+        "422":
+          description: "Validation Failed! Unprocessable entity"
+  /institutes/{instituteId}/announcement:
+    get:
+      tags: 
+        - Institute Announcement
+      summary: "Fetch Institute Announcement"
+      description: "Retrieve the Institute Announcement"
+      operationId: "getInstituteAnnouncement"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Institute Announcement"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteAnnouncement"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"  
+    post:
+      tags:
+        - Institute Announcement
+      summary: "Add/Update institute Announcement"
+      description: ""
+      operationId: "addInstituteAnnouncement"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Announcement"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Announcement"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteAnnouncementModel"
+      responses:
+        "400":
+          description: "Invalid"
+  /institutes/{instituteId}/faculties:
+    post:
+      tags:
+        - Institute Faculties
+      summary: "Fetch Institute Faculties"
+      description: "Retrieve the Institute Faculties"
+      operationId: "getInstituteFaculties"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Institute Faculties"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+        - name: section
+          in: query
+          description: Section (e.g., A)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteFacultiesModel"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"  
+    put:
+      tags:
+        - Institute Faculties
+      summary: "Add/Update institute Faculties"
+      description: ""
+      operationId: "updateInstituteFaculties"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Faculties"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Faculties"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteFacultiesModel"
+      responses:
+        "400":
+          description: "Invalid Input"
+  /fees/{instituteId}/fee-master:
+    get:
+      tags:
+        - Fee Master Setup
+      summary: "Fetch Fee Master Setup"
+      description: "Retrieve Fee Master Setup"
+      operationId: "getInstituteFeeMaster"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Institute Fee Master Setup"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteFeeMasterModel"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - Fee Master Setup
+      summary: "Add/Update institute Fee Master Setup"
+      description: ""
+      operationId: "updateInstituteFeeMaster"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Fee Master Setup"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Fee Master Setup"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteFeeMasterModel"
+      responses:
+        "400":
+          description: "Invalid Input"
+  /fees/{instituteId}/fee-term:
+    get:
+      tags:
+        - Fee Term Setup
+      summary: "Fetch Fee Term Setup"
+      description: "Retrieve Fee Term Setup"
+      operationId: "getInstituteFeeTerm"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Fee Term Setup"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteFeeTermModel"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - Fee Term Setup
+      summary: "Add/Update institute Fee Term Setup"
+      description: ""
+      operationId: "updateInstituteFeeTerm"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Fee Term Setup"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Fee Term Setup"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteFeeTermModel"
+      responses:
+        "400":
+          description: "Invalid Input"
+  /fees/{instituteId}/fee-configuration:
+    get:
+      tags:
+        - Fee Configuration Setup
+      summary: "Fetch Fee Configuration Setup"
+      description: "Retrieve Fee Configuration Setup"
+      operationId: "getInstituteFeeConfiguration"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Fetch Fee Configuration Setup"
+          required: true
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "InstituteFeeConfigurationModel"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - Fee Configuration Setup
+      summary: "Add/Update institute Fee Configuration Setup"
+      description: ""
+      operationId: "updateInstituteFeeTerm"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "instituteId"
+          description: "Upsert Institute Fee Configuration Setup"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Upsert Institute Fee Configuration Setup"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteFeeConfigurationModel"
+      responses:
+        "400":
+          description: "Invalid Input"
+  /fees/{id}:
+    delete:
+      tags:
+        - Fee Configuration Setup
+      summary: "Delete Fee Configuration Setup"
+      description: "Delete Fee Configuration Setup"
+      operationId: "deleteInstituteFeeConfiguration"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Delete Fee Configuration Setup"
+          required: true
+      responses:
+        "204":
+          description: "Fee Configuration deleted successfully"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /fees/{id}/{termId}:
+    delete:
+      tags:
+        - Fee Configuration Setup
+      summary: "Delete Fee Configuration Setup"
+      description: "Delete Fee Configuration Setup"
+      operationId: "removeArrayItemInstituteFeeConfiguration"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "id"
+          description: "Delete Fee Configuration Setup"
+          required: true
+        - in: "path"
+          name: "termId"
+          description: "Delete Fee Configuration Setup"
+          required: true
+      responses:
+        "200":
+          description: "successful operation"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /roles/{instituteId}:
+    get:
+      tags:
+        - "Role Management"
+      summary: "Retrieve Institute roles"
+      description: "Retrieve Institute roles"
+      operationId: "getInstituteRoles"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "Institute"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    put:
+      tags:
+        - "Role Management"
+      summary: "Update Institute role"
+      description: ""
+      operationId: "updateInstituteRoles"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update Institute roles"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteRole"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{instituteId}/user-role:
+    put:
+      tags:
+        - Role Management
+      summary: "Update User role"
+      description: ""
+      operationId: "updateUserRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User roles"
+          required: true
+          schema:
+            $ref: "#/definitions/UserRoles"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{instituteId}/features:
+    put:
+      tags: 
+        - Role Management
+      summary: "Update Institute Feature"
+      description: ""
+      operationId: "updateInstituteFeature"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update User roles"
+          required: true
+          schema:
+            $ref: "#/definitions/InstituteFeatures"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/role-by-user-id/{userId}:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve role by user Id
+      description: ""
+      operationId: "getRolesByUserId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/user-by-role-id/{roleId}:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve user by role Id
+      description: ""
+      operationId: "getUserByRoleId"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "roleId"
+          in: "path"
+          description: "roleId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{instituteId}/features:
+    get:
+      tags: 
+        - Role Management
+      summary: Retrieve Institute roles
+      description: ""
+      operationId: "getInstituteFeature"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "instituteId"
+          in: "path"
+          description: "instituteId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{_id}:
+    delete: 
+      tags: 
+        - Role Management
+      summary: Delete Institute Role
+      description: ""
+      operationId: "deleteInstituteRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "_id"
+          in: "path"
+          description: "_id"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /roles/{roleId}/{userId}/:
+    delete: 
+      tags: 
+        - Role Management
+      summary: Delete User Role
+      description: ""
+      operationId: "deleteUserRole"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "userId"
+          in: "path"
+          description: "userId"
+          required: true
+          type: "string"
+        - name: "roleId"
+          in: "path"
+          description: "roleId"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /admin-configs/payment-configs:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add Payment Configs
+      description: ""
+      operationId: "addPaymentConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Payment Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/PaymentConfigs"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - "Admin Configs"
+      summary: "Fetch Payment Configs"
+      description: "Retreive Payment Configs"
+      operationId: "getPaymentConfig"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/PaymentConfigs"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/application-table-configs:
+    post:
+      tags: 
+        - Admin Configs
+      summary: Add Application Table Configs
+      description: ""
+      operationId: "addApplicationTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Application Table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - Admin Configs
+      summary: Update Admission Table Config
+      description: "update admission table config"
+      operationId: "updateApplicationTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Update Admission table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - "Admin Configs"
+      summary: "Fetch Application Table Configs"
+      description: "Retreive Application Table Configs"
+      operationId: "getAllApplicationTableConfigs"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"  
+  /admin-configs/application-table-configs/{tableName}:
+    get:
+      tags: 
+        - Admin Configs
+      summary: "Fetch application table configs using table name"
+      description: "Retreive Application Table Configs using Table name"
+      operationId: "getApplicationTableConfigs"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "tableName"
+          description: "Retreive table Configs"
+          required: true 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"  
+  /admin-configs/employee-table-configs:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add Employee Table Configs
+      description: ""
+      operationId: "addEmployeeTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Employee Table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - Admin Configs
+      summary: Update Employee Table Configs
+      description: ""
+      operationId: "updateEmployeeTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Update Employee Table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch employee table configs using table name"
+      description: "Retreive employee Table Configs"
+      operationId: "getAllEmployeeTableConfigs"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/employee-table-configs/{tableName}:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch employee table configs using table name"
+      description: "Retreive employee Table Configs using Table name"
+      operationId: "getEmployeeTableConfigs"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "tableName"
+          description: "Retreive table Configs"
+          required: true 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/student-table-configs:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add Student Table Configs
+      description: ""
+      operationId: "addStudentTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Student Table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    put:
+      tags:
+        - Admin Configs
+      summary: Update Student Table Configs
+      description: ""
+      operationId: "updateStudentTableConfigs"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Update Student Table Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/ApplicationTableConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch student table configs using table name"
+      description: "Retreive student Table Configs"
+      operationId: "getAllStudentTableConfigs"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/student-table-configs/{tableName}:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch student table configs using table name"
+      description: "Retreive student Table Configs using Table name"
+      operationId: "getStudentTableConfigs"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "tableName"
+          description: "Retreive table Configs"
+          required: true 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/table-metadata-configs:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add table metadata config
+      description: "insert table metadata config"
+      operationId: "upsertTableMetaDtaConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Table Metadata Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/TableMetaDataConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch all table metadata configs"
+      description: "Retreive all table metadata configs"
+      operationId: "getMetaDataTableNames"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/table-metadata-configs/{tableName}:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch table metadata config "
+      description: "Retreive table metadata configs using table name"
+      operationId: "getTableMetaDataConfig"
+      produces:
+        - "application/json"
+      parameters:
+        - in: path
+          name: tableName
+          description: "retrieve table metadata config"
+          required: true
+          type: "string" 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/ApplicationTableConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  # {/*/admin-configs/mongo-schema/{entityName}:
+  #   get:
+  #     tags:
+  #       - Admin Configs
+  #     summary: "Fetch table metadata config "
+  #     description: "Retreive table names using entity name"
+  #     operationId: "getMongoSchemaByEntityName"
+  #     produces:
+  #       - "application/json"
+  #     parameters:
+  #       - in: path
+  #       - name: entityName
+  #         description: "retrieve table name"
+  #         required: true
+  #         type: "string" 
+  #     responses:
+  #       "200":
+  #         description: "successful operation"
+  #         schema:
+  #           type: "array"
+  #           items:
+  #             schema:
+  #               $ref: "#/definitions/ApplicationTableConfig"
+  #       "404":
+  #         description: "Notfound"
+  #         schema:
+  #           type: "String"
+  /admin-configs/email-templates:
+    post:
+      tags:
+        - Admin Configs
+      summary: Add Email Template Config
+      description: "Add email template config"
+      operationId: "addEmailTemplateConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Email Template Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/EmailTemplateConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /admin-configs/email-templates/{name}:
+    put:
+      tags: 
+        - Admin Configs
+      summary: Update Email Template
+      description: "Update email template config"
+      operationId: "updateEmailTemplateConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: "name"
+          description: "Update Email Template Configs"
+          required: true
+        - in: "body"
+          name: "body"
+          description: "Update Email Template Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/EmailTemplateConfig"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"  
+  /admin-configs/email-templates:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch email template"
+      description: "Retreive email template"
+      operationId: "getEmailTemplateConfig"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/EmailTemplateConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+  /admin-configs/email-templates/{name}:
+    get:
+      tags:
+        - Admin Configs
+      summary: "Fetch email template by name"
+      description: "Retreive email template by name"
+      operationId: "getEmailTemplateConfigByName"
+      produces:
+        - "application/json"
+      parameters:
+        - in: path
+        - name: name
+          description: "retrieve email template by name"
+          required: true
+          type: "string" 
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/EmailTemplateConfig"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String" 
+  /admin-configs/payment-configs/{id}:
+    put:
+      tags:
+        - Admin Configs
+      summary: Update Payment Configs
+      description: ""
+      operationId: "updatePaymentConfig"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: ""
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Create Payment Configs"
+          required: true
+          schema:
+            $ref: "#/definitions/PaymentConfigs"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+  /timetable:
+    get:
+      tags: 
+        - Timetable Management
+      summary: Retrieve Timetable
+      description: ""
+      operationId: "getTimetable"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: academicYear
+          in: query
+          description: Academic year (e.g., 2023-24)
+          required: true
+          schema:
+            type: string
+        - name: classGrade
+          in: query
+          description: Class grade (e.g., LKG)
+          required: true
+          schema:
+            type: string
+        - name: section
+          in: query
+          description: Section (e.g., A)
+          required: true
+          schema:
+            type: string
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "successfull Operation"
+    post:
+      tags: 
+        - Timetable Management
+      summary: Adding Timetable
+      description: ""
+      operationId: "createTimetable"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Create Timetable"
+          required: true
+          schema:
+            $ref: "#/definitions/Timetable"
+      responses:
+        "400":
+          description: "Invalid input"
+        "409":
+          description: "Timetable already exists for the specified academic year, class, and section."
+        "201":
+          description: "Timetable created successfully"
+    put: 
+      tags:
+        - Timetable Management
+      summary: Update Timetable
+      description: ""
+      operationId: "updateTimetable"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Update Timetable"
+          required: true
+          schema:
+            $ref: "#/definitions/Timetable"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "Timetable updated successfully" 
+  /leave-form:
+    get:
+      tags:
+        - Leave Management
+      summary: "Fetch Leave Request"
+      description: "Retreive Leave Request"
+      operationId: "getLeaveForm"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              schema:
+                $ref: "#/definitions/LeaveRequestForm"
+        "404":
+          description: "Notfound"
+          schema:
+            type: "String"
+    post:
+      tags:
+        - Leave Management
+      summary: Create Leave Form
+      description: ""
+      operationId: "createLeaveForm"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - in: "body"
+          name: "body"
+          description: "Create Leave Request Form"
+          required: true
+          schema:
+            $ref: "#/definitions/LeaveRequestForm"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "Successfull Operation"
+  /leave-form/{_id}:
+    get:
+      tags:
+        - Leave Management
+      summary: Retrieve Leave Form By Id
+      description: ""
+      operationId: "getLeaveFormById"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - name: "_id"
+          in: "path"
+          description: "Retrieve Leave form by Id"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "Timetable updated successfully"
+    put:
+      tags: 
+        - Leave Management
+      summary: Update Leave Request Form
+      description: ""
+      operationId: "updateLeaveForm"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - name: "_id"
+          in: "path"
+          description: "Update Leave form by Id"
+          required: true
+          type: "string"
+        - in: "body"
+          name: "body"
+          description: "Update Leave Request Form"
+          required: true
+          schema:
+            $ref: "#/definitions/LeaveRequestForm"
+      responses:
+        "400":
+          description: "Invalid input"
+        "200":
+          description: "Successfull Operation"
+    delete:
+      tags: 
+        - Leave Management
+      summary: Delete Leave Request Form
+      description: ""
+      operationId: "deleteLeaveForm"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters: 
+        - name: "_id"
+          in: "path"
+          description: "Delete Leave form by Id"
+          required: true
+          type: "string"
+      responses:
+        "400":
+          description: "Invalid _id"
+        "200":
+          description: "LeaveForm deleted successfully"
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:pets: "modify pets in your account"
+      read:pets: "read your pets"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  Users:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+      name:
+        type: "string"
+      profileURL:
+        type: "string"
+      activationLink:
+        type: "string"
+    xml:
+      name: "Users"
+  LoginUser:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+    xml:
+      name: "Users"
+  ResendVerifyEmail:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      activationLink:
+        type: "string"
+    xml:
+      name: "Users"
+  PasswordResets:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      link:
+        type: "string"
+        description: "password reset url"
+    xml:
+      name: "PasswordResets"
+  TokenResponse:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+      user:
+        type: "object"
+        properties:
+          email:
+            type: "string"
+          name:
+            type: "string"
+          profileURL:
+            type: "string"
+  UserResponseObj:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      name:
+        type: "string"
+      profileURL:
+        type: "string"
+  password:
+    type: "object"
+    properties:
+      password:
+        type: "string"
+  MetadataContent:
+    type: "object"
+    properties:
+      contentKey:
+        type: "string"
+      content:
+        type: "string"
+    xml:
+      name: "MetadataContent"
+  MetadataSchema:
+    type: "object"
+    properties:
+      entityName:
+        type: "string"
+      fields:
+        type: "array"
+        items:
+          type: "MetadataStandardField"
+    xml:
+      name: "MetadataSchema"
+  MetadataStandardField:
+    type: "object"
+    properties:
+      fieldName:
+        type: "string"
+      dataType:
+        type: "string"
+      caption:
+        type: "string"
+      mandatory:
+        type: "boolean"
+    xml:
+      name: "MetadataStandardField"
+  MetadataFeeConcession:
+    type: "object"
+    properties:
+      concessionKey:
+        type: "string"
+      description:
+        type: "string"
+      isPercentage:
+        type: "boolean"
+      percentage:
+        type: "number"
+      isFixedAmount:
+        type: "boolean"
+      fixedAmount:
+        type: "number"
+      xml:
+        name: "MetadataFeeConcession"
+  Catalogue:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      groupName:
+        type: "string"
+      instituteName:
+        type: "string"
+      branch:
+        type: "string"
+      board:
+        type: "string"
+      addressLine1:
+        type: "string"
+      addressLine2:
+        type: "string"
+      addressLine3:
+        type: "string"
+      xml:
+        name: "Catalogue"
+  MetadataCollection:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      items:
+        type: "array"
+        items:
+          $ref: "#/definitions/MetadataCollectionItem"
+    xml:
+      name: "MetadataSchema"
+  MetadataCollectionItem:
+    type: "object"
+    properties:
+      optionKey:
+        type: "string"
+      optionValue:
+        type: "string"
+      default:
+        type: "boolean"
+      description:
+        type: "string"
+      order:
+        type: "number"
+    xml:
+      name: "MetadataCollectionItem"
+  PaymentFormFields:
+    type: "object"
+    properties:
+      Id:
+        type: "string"
+      Key:
+        type: "string"
+      type:
+        type: "string"
+      name:
+        type: "string"
+      defaultValue:
+        type: "string"
+      hiddenExpression:
+        type: "boolean"
+    xml:
+      name: "MetadataCollectionItem"
+  fileToUpload:
+    type: "object"
+    properties:
+      file:
+        type: "string"
+    xml:
+      name: "FileToUpload"
+  Application:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      userId:
+        type: "string"
+      submitted:
+        type: "boolean"
+      instituteId:
+        type: "string"
+      classGrade:
+        type: "string"
+      firstName:
+        type: "string"
+      middleName:
+        type: "string"
+      lastName:
+        type: "string"
+      dateOfBirth:
+        type: "string"
+        format: "date"
+      gender:
+        type: "string"
+      bloodGroup:
+        type: "string"
+      nationality:
+        type: "string"
+      religion:
+        type: "string"
+      casteType:
+        type: "string"
+      casteName:
+        type: "string"
+      motherTongue:
+        type: "string"
+      aadhaarNumber:
+        type: "string"
+      fatherFirstName:
+        type: "string"
+      fatherLastName:
+        type: "string"
+      fatherMobileNumber:
+        type: "string"
+      fatherEmailAddress:
+        type: "string"
+      fatherOccupation:
+        type: "string"
+      fatherEmployer:
+        type: "string"
+      fatherJobTitle:
+        type: "string"
+      fatherAnnualSalary:
+        type: "number"
+        format: "float"
+      motherFirstName:
+        type: "string"
+      motherLastName:
+        type: "string"
+      motherMobileNumber:
+        type: "string"
+      motherEmailAddress:
+        type: "string"
+      motherOccupation:
+        type: "string"
+      motherEmployer:
+        type: "string"
+      motherJobTitle:
+        type: "string"
+      motherAnnualSalary:
+        type: "number"
+        format: "float"
+      permanentAddressLine:
+        type: "string"
+      permanentAddressCountry:
+        type: "string"
+      permanentAddressState:
+        type: "string"
+      permanentAddressCity:
+        type: "string"
+      permanentAddressZipCode:
+        type: "string"
+      copySameAddress:
+        type: "boolean"
+      communicationAddressLine:
+        type: "string"
+      communicationAddressCountry:
+        type: "string"
+      communicationAddressState:
+        type: "string"
+      communicationAddressCity:
+        type: "string"
+      communicationAddressZipCode:
+        type: "string"
+      previousAcademicInformationSchoolName:
+        type: "string"
+      previousAcademicInformationSchoolBoard:
+        type: "string"
+      previousAcademicInformationClass:
+        type: "string"
+      previousAcademicInformationOverallPercentage:
+        type: "number"
+        format: "float"
+      previousAcademicInformationYearOfPassing:
+        type: "string"
+        format: "float"
+      previousAcademicInformationReasonForLeaving:
+        type: "string"
+      eligibleForFeeConcession:
+        type: "boolean"
+      feeConcessionCategory:
+        type: "string"
+      needTransportFacility:
+        type: "boolean"
+      transportationMoreInformation:
+        type: "string"
+      needHostelFacility:
+        type: "boolean"
+      hostelMoreInformation:
+        type: "string"
+      xml:
+        name: "Application"
+  UpdateApplicationStatus:
+    type: "object"
+    properties:
+      applicationStatus:
+        type: "string"
+      applicationIds:
+        type: "array"
+        items:
+          type: "string"
+      interviewDate:
+        type: "string"
+      interviewerNote:
+        type: "string"
+  ApplicationScheduler:
+    type: "object"
+    properties:
+      applicationStatus:
+        type: "string"
+      applicationIds:
+        type: "array"
+        items:
+          type: "string"
+      interviewDate:
+        type: "string"
+      interviewTimeIn:
+        type: "string"
+      interviewTimeOut:
+        type: "string"
+      interviewerNote:
+        type: "string"
+  PayTMApplicationPaymentCallback:
+    type: "object"
+    properties:
+      MID:
+        type: "string"
+      TXNID:
+        type: "string"
+      ORDERID:
+        type: "string"
+      BANKTXNID:
+        type: "string"
+      TXNAMOUNT:
+        type: "string"
+      CURRENCY:
+        type: "string"
+      STATUS:
+        type: "string"
+      RESPCODE:
+        type: "string"
+      RESPMSG:
+        type: "string"
+      TXNDATE:
+        type: "string"
+      GATEWAYNAME:
+        type: "string"
+      BANKNAME:
+        type: "string"
+      PAYMENTMODE:
+        type: "string"
+      CHECKSUMHASH:
+        type: "string"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+  Employee:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      instituteId:
+        type: "string"
+      _empId:
+        type: "number"
+      empId:
+        type: "string"
+      isActive:
+        type: "boolean"
+      employeeType:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      contactNumber:
+        type: "string"
+      emailId:
+        type: "string"
+      dateOfBirth:
+        type: "string"
+        format: "date"
+      gender:
+        type: "string"
+      bloodGroup:
+        type: "string"
+      nationality:
+        type: "string"
+      religion:
+        type: "string"
+      casteType:
+        type: "string"
+      casteName:
+        type: "string"
+      motherTongue:
+        type: "string"
+      aadhaarNumber:
+        type: "string"
+      emergencyContactPersonFirstName:
+        type: "string"
+      emergencyContactPersonLastName:
+        type: "string"
+      emergencyContactMobileNumber:
+        type: "string"
+      permanentAddressLine1:
+        type: "string"
+      permanentAddressLine2:
+        type: "string"
+      permanentAddressCountry:
+        type: "string"
+      permanentAddressState:
+        type: "string"
+      permanentAddressCity:
+        type: "string"
+      permanentAddressZipCode:
+        type: "string"
+      copySameAddress:
+        type: "boolean"
+      communicationAddressLine1:
+        type: "string"
+      communicationAddressLine2:
+        type: "string"
+      communicationAddressCountry:
+        type: "string"
+      communicationAddressState:
+        type: "string"
+      communicationAddressCity:
+        type: "string"
+      communicationAddressZipCode:
+        type: "string"
+      bankAccountHolderName:
+        type: "string"
+      bankAccountAccountNumber:
+        type: "string"
+      bankAccountIFSCCode:
+        type: "string"
+      panNumber:
+        type: "string"
+      experiences:
+        type: "array"
+        items:
+          $ref: "#/definitions/EmployeeExperience"
+      dependents:
+        type: "array"
+        items:
+          $ref: "#/definitions/EmployeeDependent"
+      academicInfos:
+        type: "array"
+        items:
+          $ref: "#/definitions/EmployeeAcademicInfo"
+    xml:
+      name: "Employee"
+  EmployeeAcademicInfo:
+    type: "object"
+    properties:
+      courseType:
+        type: "string"
+      boardName:
+        type: "string"
+      schoolCollegeName:
+        type: "string"
+      overallPercentage:
+        type: "string"
+      courseName:
+        type: "string"
+      yearOfPassing:
+        type: "string"
+    xml:
+      name: "EmployeeAcademicInfo"
+  EmployeeDependent:
+    type: "object"
+    properties:
+      dependentType:
+        type: "string"
+      mobileNumber:
+        type: "string"
+      firstName:
+        type: "string"
+      lastName:
+        type: "string"
+      emailId:
+        type: "string"
+      occupation:
+        type: "string"
+    xml:
+      name: "EmployeeDependent"
+  EmployeeExperience:
+    type: "object"
+    properties:
+      employerName:
+        type: "string"
+      jobTitle:
+        type: "string"
+      employmentType:
+        type: "string"
+      location:
+        type: "string"
+      startDate:
+        type: "date"
+      endDate:
+        type: "date"
+    xml:
+      name: "EmployeeExperience"
+  Student:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      instituteId:
+        type: "string"
+      _enrollNo:
+        type: "number"
+      enrollNumber:
+        type: "string"
+      isActive:
+        type: "boolean"
+      applicationNumber:
+        type: "number"
+      firstName:
+        type: "string"
+      middleName:
+        type: "string"
+      lastName:
+        type: "string"
+      boardName:
+        type: "string"
+      candidateName:
+        type: "string"
+      classGrade:
+        type: "string"
+      dateOfBirth:
+        type: "string"
+        format: "date"
+      gender:
+        type: "string"
+      bloodGroup:
+        type: "string"
+      nationality:
+        type: "string"
+      religion:
+        type: "string"
+      casteType:
+        type: "string"
+      casteName:
+        type: "string"
+      motherTongue:
+        type: "string"
+      aadhaarNumber:
+        type: "string"
+      fatherFirstName:
+        type: "string"
+      fatherLastName:
+        type: "string"
+      fatherMobileNumber:
+        type: "string"
+      fatherEmailAddress:
+        type: "string"
+      fatherOccupation:
+        type: "string"
+      fatherEmployer:
+        type: "string"
+      fatherJobTitle:
+        type: "string"
+      fatherAnnualSalary:
+        type: "number"
+        format: "float"
+      motherFirstName:
+        type: "string"
+      motherLastName:
+        type: "string"
+      motherMobileNumber:
+        type: "string"
+      motherEmailAddress:
+        type: "string"
+      motherOccupation:
+        type: "string"
+      motherEmployer:
+        type: "string"
+      motherJobTitle:
+        type: "string"
+      motherAnnualSalary:
+        type: "number"
+        format: "float"
+      emergencyContactPerson:
+        type: "string"
+      emergencyContactNumber:
+        type: "string"
+      emergencyContactRelationship:
+        type: "string"
+      emergencyDoctorName:
+        type: "string"
+      emergencyDoctorContactNumber:
+        type: "string"
+      emergencyDoctorAddress:
+        type: "string"
+      permanentAddressLine1:
+        type: "string"
+      permanentAddressLine2:
+        type: "string"
+      permanentAddressCountry:
+        type: "string"
+      permanentAddressState:
+        type: "string"
+      permanentAddressCity:
+        type: "string"
+      permanentAddressZipCode:
+        type: "string"
+      copySameAddress:
+        type: "boolean"
+      communicationAddressLine1:
+        type: "string"
+      communicationAddressLine2:
+        type: "string"
+      communicationAddressCountry:
+        type: "string"
+      communicationAddressState:
+        type: "string"
+      communicationAddressCity:
+        type: "string"
+      communicationAddressZipCode:
+        type: "string"
+      weight:
+        type: "string"
+      height:
+        type: "string"
+      bmi:
+        type: "string"
+      HadSurgery:
+        type: "string"
+      needSpecialAttention:
+        type: "string"
+      needToObserveAnySymptoms:
+        type: "string"
+      allergies:
+        type: "string"
+      problems:
+        type: "string"
+      sibilingStudyingAtThisSchool:
+        type: "string"
+      sibilingEnrollmentNumbers:
+        type: "array"
+        items:
+          format: "string"
+      previousAcademicInformationSchoolName:
+        type: "string"
+      previousAcademicInformationSchoolBoard:
+        type: "string"
+      previousAcademicInformationClass:
+        type: "string"
+      previousAcademicInformationOverallPercentage:
+        type: "number"
+        format: "float"
+      previousAcademicInformationYearOfPassing:
+        type: "string"
+      previousAcademicInformationReasonForLeaving:
+        type: "string"
+      eligibleForFeeConcession:
+        type: "boolean"
+      feeConcessionCategory:
+        type: "string"
+      needTransportFacility:
+        type: "boolean"
+      transportationMoreInformation:
+        type: "string"
+      needHostelFacility:
+        type: "boolean"
+      hostelMoreInformation:
+        type: "string"
+      studentPhoto:
+        type: "object"
+        $ref: "#/definitions/SupportDocument"
+      interests:
+        type: "array"
+        items:
+          $ref: "#/definitions/StudentInterest"
+      achievements:
+        type: "array"
+        items:
+          $ref: "#/definitions/StudentAchievement"
+      otherDocument:
+        type: "array"
+        items:
+          $ref: "#/definitions/SupportDocument"
+    xml:
+      name: "Student"
+  StudentInterest:
+    type: "object"
+    properties:
+      sportsEvent:
+        type: "string"
+      skillLevel:
+        type: "string"
+      nameOfTheEvent:
+        type: "string"
+      competitionInterest:
+        type: "string"
+      competitionType:
+        type: "string"
+      nameOfTheLanguage:
+        type: "string"
+      level:
+        type: "string"
+    xml:
+      name: "StudentInterest"
+  StudentAchievement:
+    type: "object"
+    properties:
+      eventName:
+        type: "string"
+      winnerLevel:
+        type: "string"
+      location:
+        type: "string"
+      year:
+        type: "string"
+      description:
+        type: "string"
+    xml:
+      name: "StudentAchievement"
+  StudentFromApplication:
+    type: "object"
+    properties:
+      applicationIds:
+        type: "array"
+        items:
+          type: "string"
+  SupportDocument:
+    type: "object"
+    properties:
+      documentUrl:
+        type: "string"
+      documentType:
+        type: "string"
+      fileKey:
+        type: "string"
+      originalFileName:
+        type: "string"
+    xml:
+      name: "SupportDocument"
+  Institute:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      instituteCode:
+        type: "string"
+      instituteName:
+        type: "string"
+      boardName:
+        type: "string"
+      addressLine1:
+        type: "string"
+      addressLine2:
+        type: "string"
+      addressCountry:
+        type: "string"
+      addressState:
+        type: "string"
+      addressCity:
+        type: "string"
+      addressZipCode:
+        type: "string"
+      landlineNumber1:
+        type: "string"
+      landlineNumber2:
+        type: "string"
+      mobileNumber1:
+        type: "string"
+      mobileNumber2:
+        type: "string"
+      contactPersonName:
+        type: "string"
+      email:
+        type: "string"
+      academicYear:
+        type: "string"
+      startingMonthName:
+        type: "string"
+      needBiometric:
+        type: "boolean"
+      needOnlineAdmission:
+        type: "boolean"
+      attendenceType:
+        type: "string"
+      language:
+        type: "string"
+      dateFormat:
+        type: "string"
+      needAdmissionNumberAutoGeneration:
+        type: "boolean"
+      needAdmissionNumberPrefix:
+        type: "boolean"
+      admissionNumberPrefix:
+        type: "boolean"
+      admissionNumberDigits:
+        type: "number"
+      currencySymbol:
+        type: "string"
+      feeDueDays:
+        type: "number"
+      teacherRestrictedMode:
+        type: "boolean"
+      instituteLogo:
+        type: "object"
+        $ref: "#/definitions/SupportDocument"
+      instituteImage:
+        type: "object"
+        $ref: "#/definitions/SupportDocument"
+      instituteMobileLogo:
+        type: "object"
+        $ref: "#/definitions/SupportDocument"
+      interestedInMobileApp:
+        type: "boolean"
+      mapUrl:
+        type: "string"
+      mapEmbedded:
+        type: "string"
+      tag:
+        type: "object"
+    xml:
+      name: "Institute"
+  ApplicationStatusReport:
+    type: "object"
+    properties:
+      interviewerNote:
+        type: "string"
+      candidatePercentage:
+        type: "number"
+      candidatePerformance:
+        type: "string"
+      parentInput:
+        type: "string"
+      passPercentage:
+        type: "number"
+      reportUrl:
+        type: "string"
+    xml:
+      name: "ApplicationStatusReport"
+  DayOrder:
+    type: "object"
+    properties:
+      day:
+        type: "string"
+      type:
+        type: "string"
+      startTime:
+        type: "string"
+      endTime:
+        type: "string"
+    xml:
+      name: "DayOrder"
+  InstituteHolidayModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      holidays:
+        type: array
+        items:
+          $ref: "#/definitions/HolidayModel"
+  HolidayModel:
+    type: object
+    properties:
+      holidayName:
+        type: string
+      holidayDate:
+        type: string
+        format: date
+  InstitutePeriodTimes:
+    type: object
+    properties:
+      periodName:
+        type: string
+      startTime:
+        type: string
+      endTime:
+        type: string
+      duration: 
+        type: string
+  InstituteWorkingHours:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      instituteId:
+        type: "string"
+      workingHours:
+        type: "array"
+        items:
+          $ref: "#/definitions/DayOrder"
+    xml:
+      name: "InstituteWorkingHours"
+  InstituteClassModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      classes:
+        type: "array"
+        items:
+          $ref: "#/definitions/ClassModel"
+  ClassModel:
+    type: object
+    properties:
+      gradeName: 
+        type: string
+      section: 
+        type: string
+      startDate:
+        type: string
+        format: date
+      endDate:
+        type: string
+        format: date
+  InstituteSubjectModel:
+    type: object
+    properties: 
+      instituteId:
+        type: object
+      academicYear:
+        type: object
+      subjects:
+        type: "array"
+        items:
+          $ref: "#/definitions/SubjectModel"
+  SubjectModel:
+    type: object
+    properties:
+      subjectName:
+        type: string
+      subjectCode:
+        type: string
+      subjectType:
+        type: string
+      classification:
+        type: string
+  InstituteAnnouncementModel:
+    type:  object
+    properties:
+      instituteId: 
+        type: string
+      academicYear:
+        type: string
+      announcementType:
+        type: string
+      subject:
+        type: string
+      message:
+        type: string
+      email:
+        type: boolean
+      sms:
+        type: boolean
+      push:
+        type: boolean
+      class:
+        type: "array"
+        items:
+          $ref: "#/definitions/AnnouncementClassModel"
+      individualTeacher:
+        type: [string]
+      individualStudent:
+        type: [string]
+      publishedOn:
+        type: string
+        format: date
+  AnnouncementClassModel:
+    type: object   
+    properties:
+      section:
+        type: string
+      class:
+        type: string
+      student:
+        type: boolean
+      parent: 
+        type: boolean
+      teacher:
+        type: boolean
+  InstituteFacultiesModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      class:
+        type: string
+      sections:
+        type: "array"
+        items:
+          $ref: "#/definitions/FacultyModel"
+  FacultyModel:
+    type: object
+    properties:
+      sectionName: 
+        type: string
+      faculties:
+        type: "array"
+        items:
+          $ref: "#/definitions/SectionModel"
+  SectionModel:
+    type: object
+    properties:
+      subjectName:
+        type: string
+      empId:
+        type: string
+  InstituteFeeMasterModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      fees:
+        type: "array"
+        items:
+          $ref: "#/definitions/FeeMasterModel"
+  FeeMasterModel:
+    type: object
+    properties: 
+      feeName:
+        type: string
+      feeCode:
+        type: string
+  InstituteFeeTermModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      terms: 
+        type: "array"
+        items:
+          $ref: "#/definitions/FeeTermModel"
+  FeeTermModel:
+    type: object
+    properties:
+      termName:
+        type: string
+      feeDate:
+        type: string
+        format: date
+      dueDate:
+        type: string
+        format: date
+  InstituteFeeConfigurationModel:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      academicYear:
+        type: string
+      grade:
+        type: string
+      section:
+        type: string
+      totalAmount:
+        type: string
+      status:
+        type: string
+      terms:
+         type: "array"
+         items:
+          $ref: "#/definitions/FeeConfigurationModel"
+  FeeConfigurationModel:
+    type: object
+    properties:
+      feeType: 
+        type: string
+      feeAmount:
+        type: string
+      term:
+        type: string
+      startDate:
+        type: string
+        format: date
+      endDate:
+        type: string
+        format: date
+  Timetable:
+    type: object
+    properties:
+      academicYear:
+        type: string
+      classGrade:
+        type: string
+      section:
+        type: string
+      timetableRow:  
+        type: array  
+        items:        
+          $ref: '#/definitions/DaySchema'
+  DaySchema:
+    type: object
+    properties:
+      day:
+        type: string
+      period1:
+        type: string
+      period2:
+        type: string
+      period3:
+        type: string
+      period4:
+        type: string
+      period5:
+        type: string
+      period6:
+        type: string
+      period7:
+        type: string
+      period8:
+        type: string
+      period9:
+        type: string
+      period10:
+        type: string
+      period11:
+        type: string
+  LeaveRequestForm:
+    type: object
+    properties:
+      userId:
+        type: string
+      name: 
+        type: string
+      leaveType:
+        type: string
+      dateFrom:
+        type: string
+      dateTo:
+        type: string
+      leaveReason:
+        type: string
+  InstituteRole:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      roleName:
+        type: string
+      roles:  
+        type: array  
+        items:        
+          $ref: '#/definitions/Roles'
+  Roles: 
+    type: object
+    properties:
+      featureCode:
+        type: string
+      all:
+        type: boolean
+      read:
+        type: boolean
+      write:
+        type: boolean
+      delete:
+        type: boolean
+      publish:
+        type: boolean 
+  UserRoles:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      roleId:
+        type: string
+      users:  
+        type: array  
+        items:        
+          $ref: '#/definitions/UserRole'
+  UserRole: 
+    type: object
+    properties:
+      userId:
+        type: string
+  InstituteFeatures:
+    type: object
+    properties:
+      instituteId:
+        type: string
+      featureName:
+        type: string
+      featureCode:
+        type: string
+      publish:
+        type: boolean
+  PaymentConfigs:
+    type: object
+    properties:
+      gatewayName: 
+        type: string
+      merchantId:
+        type: string
+      merchantKey:
+        type: string
+      gateWayURL:
+        type: string
+      website:
+        type: string
+      industryTypeID:
+        type: string
+      channelId:
+        type: string
+      orderProcessURLPath:
+        type: string
+      paymentModeOnly:
+        type: string
+      paymentTypeId:
+        type: string
+      applicationTxnAmount:
+        type: string
+      applicationTxnTax:
+        type: string
+      totalTxnAmount:
+        type: string
+      admissionFeeTxnAmount:
+        type: string
+      admissionFeeTxnTax:
+        type: string
+      totalAdmissionFeeTxnAmount:
+        type: string
+  ApplicationTableConfig:
+    type: object
+    properties:
+      displayName: 
+        type: string
+      fieldName:
+        type: string
+      fieldType:
+        type: string
+      sortable:
+        type: boolean
+      optional:
+        type: boolean
+      tableNames:
+        type: [string]
+      filter:
+        type: boolean
+  TableMetaDataConfig:
+    type: object
+    properties:
+      tableName:
+        type: string
+      entityName:
+        type: string
+      columns:
+        type: array  
+        items:        
+          $ref: '#/definitions/TableMetaDataColumn'
+  TableMetaDataColumn:
+    type: object
+    properties:
+      displayName: 
+        type: string
+      fieldName: 
+        type: string
+      fieldType: 
+        type: string
+      fieldTypeFormat: 
+        type: string
+      tooltip: 
+        type: string
+      sortable: 
+        type: boolean
+      optional: 
+        type: boolean
+      order: 
+        type: number
+      filterable: 
+        type: boolean
+  EmailTemplateConfig: 
+    type: object
+    properties:
+      name:
+        type: string
+      content:
+        type: string
